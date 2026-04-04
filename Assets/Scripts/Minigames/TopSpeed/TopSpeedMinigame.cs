@@ -1,9 +1,20 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class TopSpeedMinigame : MonoBehaviour
+public class TopSpeedMinigame : MinigameBase
 {
     private InputSystem_Actions inputActions;
+
+    [Header("References")]
+    [SerializeField] private ScrollingBackground scrollingBackground;
+    [SerializeField] private TextMeshProUGUI speedText;
+
+    [Header("Settings")]
+    [SerializeField] private float startingSpeed = 50;
+    [SerializeField] private float minSpeedThreshold = 60;
+    [SerializeField] private float maxSpeedThreshold = 100;
+    [SerializeField] private float speedIncrease;
 
     private float currentSpeed;
     private float speedModifier;
@@ -11,19 +22,26 @@ public class TopSpeedMinigame : MonoBehaviour
     private void Start()
     {
 
-        SetUpMinigame();
+        SetupMinigame();
+    }
+
+    private void OnEnable()
+    {
+        PostMinigameUI.OnPostGameTimerEnd += ResetMinigame;
     }
 
     private void Update()
     {
         ChangeSpeedOverTime();
+        scrollingBackground.ScrollXAxis();
+        UpdateSpeedText();
     }
 
     private void ChangeSpeedOverTime()
     {
-        currentSpeed += (-1 + (speedModifier * 2)) * Time.deltaTime;
+        currentSpeed += (-1 + (speedModifier * speedIncrease)) * Time.deltaTime;
 
-        Debug.Log($"current speed: {currentSpeed}, speed modifier: {speedModifier}");
+        //Debug.Log($"current speed: {currentSpeed}, speed modifier: {speedModifier}");
     }
 
     private void ChangeSpeedMod(InputAction.CallbackContext context)
@@ -31,13 +49,56 @@ public class TopSpeedMinigame : MonoBehaviour
         speedModifier = context.ReadValue<float>();
     }
 
-    private void SetUpMinigame()
+    private void UpdateSpeedText()
+    {
+        speedText.text = currentSpeed.ToString("F0") + "km/J";
+    }
+
+    private void CheckResults()
+    {
+        if(currentSpeed <= maxSpeedThreshold && currentSpeed >= minSpeedThreshold)
+        {
+            MinigameWin();
+            PostMinigameUI.Instance.OpenWinScreen();
+            Debug.Log("you win");
+        }
+        else
+        {
+            MinigameLose();
+            PostMinigameUI.Instance.OpenLoseScreen();
+            Debug.Log("you lose");
+        }
+    }
+
+    private void ResetMinigame()
+    {
+        currentSpeed = Random.Range(45, 55);
+
+        //RandomizeThreshold();
+    }
+
+    private void RandomizeThreshold()
+    {
+        minSpeedThreshold = Random.Range(50, 60);
+        maxSpeedThreshold = Random.Range(70, 100);
+    }
+
+    public override void SetupMinigame()
     {
         inputActions = InputManager.Instance.GetInputAction();
 
         inputActions.TopSpeed.IncreaseSpeed.performed += ChangeSpeedMod;
         inputActions.TopSpeed.IncreaseSpeed.canceled += ChangeSpeedMod;
+        GameManager.OnTimerFinish += CheckResults;
 
         inputActions.TopSpeed.Enable();
+
+        currentSpeed = startingSpeed;
     }
+
+    public override void SetupUI()
+    {
+        //speedText.text = currentSpeed.ToString();
+    }
+
 }
