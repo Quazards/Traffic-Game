@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -7,10 +8,16 @@ public class GameManager : MonoBehaviour
 
     public static Action OnTimerFinish;
 
+    [Header("Minigames")]
+    public MinigameBase[] minigameBases;
+
+    private List<MinigameBase> shuffledMinigames = new();
+
     private float baseTimer = 5;
     private bool canCountDownTimer = false;
     private float score;
     private float currentTime;
+    private float playedMinigamesCount = 0;
 
     private void Awake()
     {
@@ -28,11 +35,18 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         MinigameBase.OnMinigameWin += IncrementScore;
-        PostMinigameUI.OnPostGameTimerEnd    += ResetTimer;
+        PostMinigameUI.OnPostGameTimerEnd += SetNextMinigame;
+    }
+
+    private void OnDisable()
+    {
+        MinigameBase.OnMinigameWin -= IncrementScore;
+        PostMinigameUI.OnPostGameTimerEnd -= SetNextMinigame;
     }
 
     private void Start()
     {
+        RandomizeMinigame();
         ResetTimer();
     }
 
@@ -72,4 +86,42 @@ public class GameManager : MonoBehaviour
         
     }
 
+    private void ShuffleMinigames()
+    {
+        shuffledMinigames = new List<MinigameBase>(minigameBases);
+
+        for(int i = 0; i < shuffledMinigames.Count; i++)
+        {
+            int random = UnityEngine.Random.Range(i, shuffledMinigames.Count);
+
+            MinigameBase temp = shuffledMinigames[i];
+            shuffledMinigames[i] = shuffledMinigames[random];
+            shuffledMinigames[random] = temp;
+        }
+    }
+
+    private void RandomizeMinigame()
+    {
+        if (shuffledMinigames.Count == 0)
+        {
+            ShuffleMinigames();
+        }
+
+        MinigameBase selectedMinigame = shuffledMinigames[0];
+        shuffledMinigames.RemoveAt(0);
+
+        selectedMinigame.SetupMinigame();
+        selectedMinigame.SetupUI();
+    }
+
+    private void SetNextMinigame()
+    {
+        ResetTimer();
+        RandomizeMinigame();
+    }
+
+    public void SetTimerToZero()
+    {
+        currentTime = 0;
+    }
 }

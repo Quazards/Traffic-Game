@@ -7,6 +7,7 @@ public class TopSpeedMinigame : MinigameBase
     private InputSystem_Actions inputActions;
 
     [Header("References")]
+    [SerializeField] private GameObject minigameUI;
     [SerializeField] private ScrollingBackground scrollingBackground;
     [SerializeField] private TextMeshProUGUI speedText;
 
@@ -22,12 +23,23 @@ public class TopSpeedMinigame : MinigameBase
     private void Start()
     {
 
-        SetupMinigame();
+        //SetupMinigame();
     }
 
     private void OnEnable()
     {
         PostMinigameUI.OnPostGameTimerEnd += ResetMinigame;
+        PostMinigameUI.OnPostGameHalfWay += CloseMinigame;
+    }
+
+    private void OnDisable()
+    {
+        PostMinigameUI.OnPostGameTimerEnd -= ResetMinigame;
+        inputActions.TopSpeed.IncreaseSpeed.performed -= ChangeSpeedMod;
+        inputActions.TopSpeed.IncreaseSpeed.canceled -= ChangeSpeedMod;
+        GameManager.OnTimerFinish -= CheckResults;
+        PostMinigameUI.OnPostGameHalfWay -= CloseMinigame;
+        inputActions.TopSpeed.Disable();
     }
 
     private void Update()
@@ -60,13 +72,13 @@ public class TopSpeedMinigame : MinigameBase
         {
             MinigameWin();
             PostMinigameUI.Instance.OpenWinScreen();
-            Debug.Log("you win");
+            //Debug.Log("you win");
         }
         else
         {
             MinigameLose();
             PostMinigameUI.Instance.OpenLoseScreen();
-            Debug.Log("you lose");
+            //Debug.Log("you lose");
         }
     }
 
@@ -85,6 +97,7 @@ public class TopSpeedMinigame : MinigameBase
 
     public override void SetupMinigame()
     {
+        this.enabled = true;
         inputActions = InputManager.Instance.GetInputAction();
 
         inputActions.TopSpeed.IncreaseSpeed.performed += ChangeSpeedMod;
@@ -98,7 +111,12 @@ public class TopSpeedMinigame : MinigameBase
 
     public override void SetupUI()
     {
-        //speedText.text = currentSpeed.ToString();
+        minigameUI.SetActive(true);
     }
 
+    public override void CloseMinigame()
+    {
+        this.enabled = false;
+        minigameUI.SetActive(false);
+    }
 }

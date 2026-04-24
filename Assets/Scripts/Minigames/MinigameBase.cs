@@ -8,8 +8,11 @@ public abstract class MinigameBase : MonoBehaviour
     public static EventHandler OnMinigameWin;
     public static EventHandler OnMinigameLose;
 
+    public bool hasBeenPlayed = false;
+
     public abstract void SetupMinigame();
     public abstract void SetupUI();
+    public abstract void CloseMinigame();
 
     public void MinigameWin()
     {

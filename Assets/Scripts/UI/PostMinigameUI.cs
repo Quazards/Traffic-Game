@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DG.Tweening;
 using TMPro;
 using Unity.VisualScripting;
@@ -9,6 +10,7 @@ public class PostMinigameUI : MonoBehaviour
     public static PostMinigameUI Instance;
 
     public static Action OnPostGameTimerEnd;
+    public static Action OnPostGameHalfWay;
 
     [Header("References")]
     [SerializeField] private RectTransform resultScreen;
@@ -53,7 +55,7 @@ public class PostMinigameUI : MonoBehaviour
         {
             OnPostGameTimerEnd?.Invoke();
             CloseScreen();
-            Debug.Log("post game timer ended");
+            //Debug.Log("post game timer ended");
         }
     }
 
@@ -73,7 +75,7 @@ public class PostMinigameUI : MonoBehaviour
             postMiniTween.Kill(false);
         }
 
-        postMiniTween.onComplete += onEnd;
+        //postMiniTween.onComplete += onEnd;
     }
 
     private void CloseScreen()
@@ -81,14 +83,28 @@ public class PostMinigameUI : MonoBehaviour
         MoveOut( () =>
         {
             scoreText.gameObject.SetActive(false);
-            winScreen.gameObject.SetActive(false);
-            loseScreen.gameObject.SetActive(false);
+            winScreen.SetActive(false);
+            loseScreen.SetActive(false);
         });
     }
 
+    private IEnumerator HalfwayTimer()
+    {
+        yield return new WaitForSeconds(breakTimer / 2);
+        OnPostGameHalfWay?.Invoke();
+    }
+
+    private void CheckHalfwayPoint()
+    {
+        StartCoroutine(HalfwayTimer());
+    }
 
     public void OpenWinScreen()
     {
+        CheckHalfwayPoint();
+        scoreText.gameObject.SetActive(false);
+        loseScreen.SetActive(false);
+
         scoreText.gameObject.SetActive(true);
         winScreen.SetActive(true);
         MoveIn();
@@ -96,6 +112,10 @@ public class PostMinigameUI : MonoBehaviour
 
     public void OpenLoseScreen()
     {
+        CheckHalfwayPoint();
+        scoreText.gameObject.SetActive(false);
+        winScreen.SetActive(false);
+
         scoreText.gameObject.SetActive(true);
         loseScreen.SetActive(true);
         MoveIn();
@@ -110,6 +130,6 @@ public class PostMinigameUI : MonoBehaviour
     {
         currentTimer = breakTimer;
 
-        Debug.Log("break timer reset");
+        //Debug.Log("break timer reset");
     }
 }
