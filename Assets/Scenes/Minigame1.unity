@@ -834,6 +834,7 @@ MonoBehaviour:
   minigameBases:
   - {fileID: 1203085480}
   - {fileID: 2108210739}
+  - {fileID: 1047868699}
 --- !u!1 &169333038
 GameObject:
   m_ObjectHideFlags: 0
@@ -1105,6 +1106,7 @@ GameObject:
   - component: {fileID: 285963880}
   - component: {fileID: 285963882}
   - component: {fileID: 285963881}
+  - component: {fileID: 285963883}
   m_Layer: 5
   m_Name: Image (1)
   m_TagString: Untagged
@@ -1169,6 +1171,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 285963879}
   m_CullTransparentMesh: 1
+--- !u!114 &285963883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 285963879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff68d31017a59854ab1ab7a366688d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCar: {fileID: 139162296}
 --- !u!1 &294505469
 GameObject:
   m_ObjectHideFlags: 0
@@ -1462,6 +1477,7 @@ GameObject:
   - component: {fileID: 338406468}
   - component: {fileID: 338406470}
   - component: {fileID: 338406469}
+  - component: {fileID: 338406471}
   m_Layer: 5
   m_Name: Image (3)
   m_TagString: Untagged
@@ -1526,6 +1542,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 338406467}
   m_CullTransparentMesh: 1
+--- !u!114 &338406471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338406467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff68d31017a59854ab1ab7a366688d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCar: {fileID: 139162296}
 --- !u!1 &358917019
 GameObject:
   m_ObjectHideFlags: 0
@@ -3974,6 +4003,7 @@ GameObject:
   - component: {fileID: 894498928}
   - component: {fileID: 894498930}
   - component: {fileID: 894498929}
+  - component: {fileID: 894498931}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -4038,6 +4068,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 894498927}
   m_CullTransparentMesh: 1
+--- !u!114 &894498931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894498927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff68d31017a59854ab1ab7a366688d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCar: {fileID: 139162296}
 --- !u!1 &906167861
 GameObject:
   m_ObjectHideFlags: 0
@@ -4648,6 +4691,7 @@ GameObject:
   - component: {fileID: 1009624618}
   - component: {fileID: 1009624620}
   - component: {fileID: 1009624619}
+  - component: {fileID: 1009624621}
   m_Layer: 5
   m_Name: Image (2)
   m_TagString: Untagged
@@ -4712,6 +4756,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1009624617}
   m_CullTransparentMesh: 1
+--- !u!114 &1009624621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009624617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff68d31017a59854ab1ab7a366688d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCar: {fileID: 139162296}
 --- !u!1 &1029308963
 GameObject:
   m_ObjectHideFlags: 0
@@ -4798,7 +4855,7 @@ MonoBehaviour:
   background: {fileID: 393762788}
   maxXPos: 0
   maxYPos: 1500
-  speed: 10
+  speed: 7
 --- !u!114 &1047868699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4806,17 +4863,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1047868696}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87710409465bed64880a92feb7892d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hasBeenPlayed: 0
+  minigameUI: {fileID: 1249692453}
   scrollingBackground: {fileID: 1047868698}
   car: {fileID: 139162296}
   leftSideAnchor: {fileID: 247316512}
   rightSideAnchor: {fileID: 393309483}
-  changeSpeed: 6
+  changeSpeed: 8
 --- !u!1 &1084561348
 GameObject:
   m_ObjectHideFlags: 0

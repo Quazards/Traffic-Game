@@ -7,9 +7,11 @@ public class RoadMarkingsMinigame : MinigameBase
 {
     private InputSystem_Actions inputActions;
 
-    public static Action OnChangingLanes;
+    public static Action OnMoving;
+    public static Action OnCollision;
 
     [Header("References")]
+    [SerializeField] private GameObject minigameUI;
     [SerializeField] private ScrollingBackground scrollingBackground;
     [SerializeField] private RectTransform car;
     [SerializeField] private RectTransform leftSideAnchor;
@@ -20,11 +22,30 @@ public class RoadMarkingsMinigame : MinigameBase
 
     private bool isLeft = true;
     private bool isChangingLanes = false;
+    private bool hasWonMinigame = false;
+    private bool hasLostMinigame = false;
     private Vector2 targetPos;
 
     private void Start()
     {
-        SetupMinigame();
+        //SetupMinigame();
+    }
+
+    private void OnEnable()
+    {
+        OnCollision += LoseMinigame;
+        GameManager.OnTimerFinish += WinMinigame;
+        PostMinigameUI.OnPostGameHalfWay += CloseMinigame;
+    }
+
+    private void OnDisable()
+    {
+        OnCollision -= LoseMinigame;
+        GameManager.OnTimerFinish -= WinMinigame;
+        inputActions.RoadMarkings.SwitchLanes.performed -= SwitchLanes;
+        PostMinigameUI.OnPostGameHalfWay -= CloseMinigame;
+
+        inputActions.RoadMarkings.Disable();
     }
 
     private void Update()
@@ -37,9 +58,7 @@ public class RoadMarkingsMinigame : MinigameBase
                 car.anchoredPosition,
                 targetPos,
                 changeSpeed * Time.deltaTime
-            );
-
-            OnChangingLanes?.Invoke();
+            );  
 
             if (Vector2.Distance(car.anchoredPosition, targetPos) < 0.01f)
             {
@@ -47,6 +66,11 @@ public class RoadMarkingsMinigame : MinigameBase
                 isChangingLanes = false;
             }
         }
+    }
+
+    private void FixedUpdate()
+    {
+        OnMoving?.Invoke();
     }
 
     private void SwitchLanes(InputAction.CallbackContext context)
@@ -65,23 +89,45 @@ public class RoadMarkingsMinigame : MinigameBase
 
         isChangingLanes = true;
     }
-
-    public override void CloseMinigame()
+    private void LoseMinigame()
     {
-        throw new System.NotImplementedException();
+        if (!hasLostMinigame)
+        {
+            if (hasWonMinigame) return;
+            hasLostMinigame = true;
+            MinigameLose();
+            PostMinigameUI.Instance.OpenLoseScreen();
+        }
     }
 
+    private void WinMinigame()
+    {
+        hasWonMinigame = true;
+        MinigameWin();
+        PostMinigameUI.Instance.OpenWinScreen();
+    }
+    public override void CloseMinigame()
+    {
+        minigameUI.SetActive(false);
+        this.enabled = false;
+    }
+    
     public override void SetupMinigame()
     {
+        this.enabled = true;
         inputActions = InputManager.Instance.GetInputAction();
-
         inputActions.RoadMarkings.SwitchLanes.performed += SwitchLanes;
-
         inputActions.RoadMarkings.Enable();
+        hasLostMinigame = false;
+        hasWonMinigame = false;
+
+        car.position = leftSideAnchor.position;
+        isLeft = true;
+        scrollingBackground.ResetYAxis();
     }
 
     public override void SetupUI()
     {
-        throw new System.NotImplementedException();
+        minigameUI.SetActive(true);
     }
 }

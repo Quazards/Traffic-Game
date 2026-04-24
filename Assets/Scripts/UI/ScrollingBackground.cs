@@ -42,4 +42,10 @@ public class ScrollingBackground : MonoBehaviour
             currentYPos = 0;
         }
     }
+
+    public void ResetYAxis()
+    {
+        background.transform.localPosition = new Vector3(0, 0, 0);
+        currentYPos = 0;
+    }
 }
