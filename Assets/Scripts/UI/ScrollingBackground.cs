@@ -33,10 +33,10 @@ public class ScrollingBackground : MonoBehaviour
 
     public void ScrollYAxis()
     {
-        currentYPos += speed;
+        currentYPos -= speed;
         background.transform.localPosition = new Vector3(0, currentYPos, 0);
 
-        if (currentYPos > maxYPos)
+        if (currentYPos < -maxYPos)
         {
             background.transform.localPosition = new Vector3(0, 0, 0);
             currentYPos = 0;

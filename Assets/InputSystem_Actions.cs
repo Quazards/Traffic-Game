@@ -1105,6 +1105,34 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""RoadMarkings"",
+            ""id"": ""af2c0f52-a2db-4baa-9ca8-0b0ffea44024"",
+            ""actions"": [
+                {
+                    ""name"": ""SwitchLanes"",
+                    ""type"": ""Button"",
+                    ""id"": ""32a29aec-5e5f-4a8e-8e56-8fdbc7615a29"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""7415f74f-a624-48ef-b1dc-d8c7c0a17187"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchLanes"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1196,6 +1224,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         // TopSpeed
         m_TopSpeed = asset.FindActionMap("TopSpeed", throwIfNotFound: true);
         m_TopSpeed_IncreaseSpeed = m_TopSpeed.FindAction("IncreaseSpeed", throwIfNotFound: true);
+        // RoadMarkings
+        m_RoadMarkings = asset.FindActionMap("RoadMarkings", throwIfNotFound: true);
+        m_RoadMarkings_SwitchLanes = m_RoadMarkings.FindAction("SwitchLanes", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1203,6 +1234,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_TopSpeed.enabled, "This will cause a leak and performance issues, InputSystem_Actions.TopSpeed.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_RoadMarkings.enabled, "This will cause a leak and performance issues, InputSystem_Actions.RoadMarkings.Disable() has not been called.");
     }
 
     /// <summary>
@@ -1749,6 +1781,102 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="TopSpeedActions" /> instance referencing this action map.
     /// </summary>
     public TopSpeedActions @TopSpeed => new TopSpeedActions(this);
+
+    // RoadMarkings
+    private readonly InputActionMap m_RoadMarkings;
+    private List<IRoadMarkingsActions> m_RoadMarkingsActionsCallbackInterfaces = new List<IRoadMarkingsActions>();
+    private readonly InputAction m_RoadMarkings_SwitchLanes;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "RoadMarkings".
+    /// </summary>
+    public struct RoadMarkingsActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public RoadMarkingsActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "RoadMarkings/SwitchLanes".
+        /// </summary>
+        public InputAction @SwitchLanes => m_Wrapper.m_RoadMarkings_SwitchLanes;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_RoadMarkings; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="RoadMarkingsActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(RoadMarkingsActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="RoadMarkingsActions" />
+        public void AddCallbacks(IRoadMarkingsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_RoadMarkingsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_RoadMarkingsActionsCallbackInterfaces.Add(instance);
+            @SwitchLanes.started += instance.OnSwitchLanes;
+            @SwitchLanes.performed += instance.OnSwitchLanes;
+            @SwitchLanes.canceled += instance.OnSwitchLanes;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="RoadMarkingsActions" />
+        private void UnregisterCallbacks(IRoadMarkingsActions instance)
+        {
+            @SwitchLanes.started -= instance.OnSwitchLanes;
+            @SwitchLanes.performed -= instance.OnSwitchLanes;
+            @SwitchLanes.canceled -= instance.OnSwitchLanes;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="RoadMarkingsActions.UnregisterCallbacks(IRoadMarkingsActions)" />.
+        /// </summary>
+        /// <seealso cref="RoadMarkingsActions.UnregisterCallbacks(IRoadMarkingsActions)" />
+        public void RemoveCallbacks(IRoadMarkingsActions instance)
+        {
+            if (m_Wrapper.m_RoadMarkingsActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="RoadMarkingsActions.AddCallbacks(IRoadMarkingsActions)" />
+        /// <seealso cref="RoadMarkingsActions.RemoveCallbacks(IRoadMarkingsActions)" />
+        /// <seealso cref="RoadMarkingsActions.UnregisterCallbacks(IRoadMarkingsActions)" />
+        public void SetCallbacks(IRoadMarkingsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_RoadMarkingsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_RoadMarkingsActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="RoadMarkingsActions" /> instance referencing this action map.
+    /// </summary>
+    public RoadMarkingsActions @RoadMarkings => new RoadMarkingsActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -1977,5 +2105,20 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnIncreaseSpeed(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "RoadMarkings" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="RoadMarkingsActions.AddCallbacks(IRoadMarkingsActions)" />
+    /// <seealso cref="RoadMarkingsActions.RemoveCallbacks(IRoadMarkingsActions)" />
+    public interface IRoadMarkingsActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "SwitchLanes" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwitchLanes(InputAction.CallbackContext context);
     }
 }

@@ -1019,6 +1019,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "RoadMarkings",
+            "id": "af2c0f52-a2db-4baa-9ca8-0b0ffea44024",
+            "actions": [
+                {
+                    "name": "SwitchLanes",
+                    "type": "Button",
+                    "id": "32a29aec-5e5f-4a8e-8e56-8fdbc7615a29",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7415f74f-a624-48ef-b1dc-d8c7c0a17187",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchLanes",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
