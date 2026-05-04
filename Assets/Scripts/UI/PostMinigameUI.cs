@@ -11,12 +11,14 @@ public class PostMinigameUI : MonoBehaviour
 
     public static Action OnPostGameTimerEnd;
     public static Action OnPostGameHalfWay;
+    public static Action OnPostGameThreeFourths;
 
     [Header("References")]
     [SerializeField] private RectTransform resultScreen;
     [SerializeField] private GameObject winScreen;
     [SerializeField] private GameObject loseScreen;
     [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private GameObject gameEndScreen;
 
     [Header("Settings")]
     [SerializeField] private float initialXPos;
@@ -26,6 +28,8 @@ public class PostMinigameUI : MonoBehaviour
     private Tween postMiniTween;
     private float breakTimer = 3;
     private float currentTimer = 0;
+    private bool canCountdown = true;
+    private bool hasOpenedPostScreen = false;
 
     private void Awake()
     {
@@ -42,11 +46,25 @@ public class PostMinigameUI : MonoBehaviour
 
     private void OnEnable()
     {
-        MinigameBase.OnMinigameStop += ResetBreakTimer; 
+        MinigameBase.OnMinigameStop += ResetBreakTimer;
+        GameManager.OnGameStart += StartPostMinigameCountdown;
+        GameManager.OnGameStart += CloseGameEndScreen;
+        HealthSystem.OnZeroHealth += StopPostMinigameCountdown;
+        HealthSystem.OnZeroHealth += OpenGameEndScreen;
+    }
+
+    private void OnDisable()
+    {
+        MinigameBase.OnMinigameStop -= ResetBreakTimer;
+        GameManager.OnGameStart -= StartPostMinigameCountdown;
+        GameManager.OnGameStart -= CloseGameEndScreen;
+        HealthSystem.OnZeroHealth -= StopPostMinigameCountdown;
+        HealthSystem.OnZeroHealth -= OpenGameEndScreen;
     }
 
     private void Update()
     {
+        if (!canCountdown) return;
         if (currentTimer <= 0) return;
 
         currentTimer -= Time.deltaTime;
@@ -55,7 +73,6 @@ public class PostMinigameUI : MonoBehaviour
         {
             OnPostGameTimerEnd?.Invoke();
             CloseScreen();
-            //Debug.Log("post game timer ended");
         }
     }
 
@@ -94,14 +111,37 @@ public class PostMinigameUI : MonoBehaviour
         OnPostGameHalfWay?.Invoke();
     }
 
+    private IEnumerator ThreeFourthsTimer()
+    {
+        yield return new WaitForSeconds (breakTimer * 0.75f);
+        OnPostGameThreeFourths?.Invoke();
+    }
+
+    private void OpenGameEndScreen()
+    {
+        gameEndScreen.SetActive(true);
+    }
+
+    private void CloseGameEndScreen()
+    {
+        gameEndScreen.SetActive(false);
+    }
+
     private void CheckHalfwayPoint()
     {
         StartCoroutine(HalfwayTimer());
     }
 
+    private void CheckThreeFourthsPoint()
+    {
+        StartCoroutine(ThreeFourthsTimer());
+    }
+
     public void OpenWinScreen()
     {
+        hasOpenedPostScreen = true;
         CheckHalfwayPoint();
+        CheckThreeFourthsPoint();
         scoreText.gameObject.SetActive(false);
         loseScreen.SetActive(false);
 
@@ -112,7 +152,9 @@ public class PostMinigameUI : MonoBehaviour
 
     public void OpenLoseScreen()
     {
+        hasOpenedPostScreen = true;
         CheckHalfwayPoint();
+        CheckThreeFourthsPoint();
         scoreText.gameObject.SetActive(false);
         winScreen.SetActive(false);
 
@@ -129,7 +171,20 @@ public class PostMinigameUI : MonoBehaviour
     public void ResetBreakTimer(object sender, System.EventArgs e)
     {
         currentTimer = breakTimer;
+    }
 
-        //Debug.Log("break timer reset");
+    public void StopPostMinigameCountdown()
+    {
+        canCountdown = false;
+    }
+
+    public void StartPostMinigameCountdown()
+    {
+        canCountdown = true;
+
+        if(hasOpenedPostScreen)
+        {
+            currentTimer = 0.01f;
+        }
     }
 }

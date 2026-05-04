@@ -25,7 +25,6 @@ public class RoadCollider : MonoBehaviour
         if(RectHelp.IsOverlapping(rectTransform, targetCar))
         {
             RoadMarkingsMinigame.OnCollision?.Invoke();
-            Debug.Log("has triggered collision");
         }
     }
 }

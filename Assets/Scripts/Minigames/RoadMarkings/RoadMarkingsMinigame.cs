@@ -60,7 +60,7 @@ public class RoadMarkingsMinigame : MinigameBase
                 changeSpeed * Time.deltaTime
             );  
 
-            if (Vector2.Distance(car.anchoredPosition, targetPos) < 0.01f)
+            if (Vector2.Distance(car.anchoredPosition, targetPos) < 0.1f)
             {
                 car.anchoredPosition = targetPos;
                 isChangingLanes = false;
@@ -102,6 +102,7 @@ public class RoadMarkingsMinigame : MinigameBase
 
     private void WinMinigame()
     {
+        if (hasLostMinigame) return;
         hasWonMinigame = true;
         MinigameWin();
         PostMinigameUI.Instance.OpenWinScreen();

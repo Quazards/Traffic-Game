@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public static Action OnTimerFinish;
+    public static Action OnGameStart;
 
     [Header("Minigames")]
     public MinigameBase[] minigameBases;
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour
 
     private float baseTimer = 5;
     private bool canCountDownTimer = false;
+    private bool canRandomizeMinigame = true;
     private float score;
     private float currentTime;
     private float playedMinigamesCount = 0;
@@ -34,20 +36,25 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
+        OnGameStart += SetNextMinigame;
+        OnGameStart += ResetScore;
         MinigameBase.OnMinigameWin += IncrementScore;
         PostMinigameUI.OnPostGameTimerEnd += SetNextMinigame;
+        MinigameBase.OnMinigameStop += EnableMinigameRandomization;
     }
 
     private void OnDisable()
     {
+        OnGameStart -= SetNextMinigame;
+        OnGameStart -= ResetScore;
         MinigameBase.OnMinigameWin -= IncrementScore;
         PostMinigameUI.OnPostGameTimerEnd -= SetNextMinigame;
+        MinigameBase.OnMinigameStop -= EnableMinigameRandomization;
     }
 
     private void Start()
     {
-        RandomizeMinigame();
-        ResetTimer();
+        StartGame();
     }
 
     private void Update()
@@ -102,6 +109,7 @@ public class GameManager : MonoBehaviour
 
     private void RandomizeMinigame()
     {
+
         if (shuffledMinigames.Count == 0)
         {
             ShuffleMinigames();
@@ -112,16 +120,42 @@ public class GameManager : MonoBehaviour
 
         selectedMinigame.SetupMinigame();
         selectedMinigame.SetupUI();
+        canRandomizeMinigame = false;
     }
 
     private void SetNextMinigame()
     {
+        if (!canRandomizeMinigame)
+        {
+            Debug.Log("cant randomize minigame");
+            return;
+        }
+
+        Debug.Log("next minigame has been randomized");
+
         ResetTimer();
         RandomizeMinigame();
+    }
+
+    private void ResetScore()
+    {
+        score = 0;
+        PostMinigameUI.Instance.UpdateScoreText(score);
     }
 
     public void SetTimerToZero()
     {
         currentTime = 0;
+    }
+
+    public void StartGame()
+    {
+        canRandomizeMinigame = true;
+        OnGameStart?.Invoke();
+    }
+
+    public void EnableMinigameRandomization(object sender, System.EventArgs e)
+    {
+        canRandomizeMinigame = true;
     }
 }
