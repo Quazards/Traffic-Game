@@ -1133,6 +1133,54 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""FollowDirection"",
+            ""id"": ""e8edf20f-6fd1-4c50-8613-14df49969314"",
+            ""actions"": [
+                {
+                    ""name"": ""TurnLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""8acaaac4-cd55-4851-bf9c-a11ca8b95d0b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TurnRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""a4652a01-6b90-47f2-99fc-f7b5739bdd9f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""b08141fd-82e0-4a0e-801e-89607661ed13"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TurnLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e5471b14-1de7-4e44-b983-54c3eb4a6c1d"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TurnRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1227,6 +1275,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         // RoadMarkings
         m_RoadMarkings = asset.FindActionMap("RoadMarkings", throwIfNotFound: true);
         m_RoadMarkings_SwitchLanes = m_RoadMarkings.FindAction("SwitchLanes", throwIfNotFound: true);
+        // FollowDirection
+        m_FollowDirection = asset.FindActionMap("FollowDirection", throwIfNotFound: true);
+        m_FollowDirection_TurnLeft = m_FollowDirection.FindAction("TurnLeft", throwIfNotFound: true);
+        m_FollowDirection_TurnRight = m_FollowDirection.FindAction("TurnRight", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1235,6 +1287,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_TopSpeed.enabled, "This will cause a leak and performance issues, InputSystem_Actions.TopSpeed.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_RoadMarkings.enabled, "This will cause a leak and performance issues, InputSystem_Actions.RoadMarkings.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_FollowDirection.enabled, "This will cause a leak and performance issues, InputSystem_Actions.FollowDirection.Disable() has not been called.");
     }
 
     /// <summary>
@@ -1877,6 +1930,113 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="RoadMarkingsActions" /> instance referencing this action map.
     /// </summary>
     public RoadMarkingsActions @RoadMarkings => new RoadMarkingsActions(this);
+
+    // FollowDirection
+    private readonly InputActionMap m_FollowDirection;
+    private List<IFollowDirectionActions> m_FollowDirectionActionsCallbackInterfaces = new List<IFollowDirectionActions>();
+    private readonly InputAction m_FollowDirection_TurnLeft;
+    private readonly InputAction m_FollowDirection_TurnRight;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "FollowDirection".
+    /// </summary>
+    public struct FollowDirectionActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public FollowDirectionActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "FollowDirection/TurnLeft".
+        /// </summary>
+        public InputAction @TurnLeft => m_Wrapper.m_FollowDirection_TurnLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "FollowDirection/TurnRight".
+        /// </summary>
+        public InputAction @TurnRight => m_Wrapper.m_FollowDirection_TurnRight;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_FollowDirection; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="FollowDirectionActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(FollowDirectionActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="FollowDirectionActions" />
+        public void AddCallbacks(IFollowDirectionActions instance)
+        {
+            if (instance == null || m_Wrapper.m_FollowDirectionActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_FollowDirectionActionsCallbackInterfaces.Add(instance);
+            @TurnLeft.started += instance.OnTurnLeft;
+            @TurnLeft.performed += instance.OnTurnLeft;
+            @TurnLeft.canceled += instance.OnTurnLeft;
+            @TurnRight.started += instance.OnTurnRight;
+            @TurnRight.performed += instance.OnTurnRight;
+            @TurnRight.canceled += instance.OnTurnRight;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="FollowDirectionActions" />
+        private void UnregisterCallbacks(IFollowDirectionActions instance)
+        {
+            @TurnLeft.started -= instance.OnTurnLeft;
+            @TurnLeft.performed -= instance.OnTurnLeft;
+            @TurnLeft.canceled -= instance.OnTurnLeft;
+            @TurnRight.started -= instance.OnTurnRight;
+            @TurnRight.performed -= instance.OnTurnRight;
+            @TurnRight.canceled -= instance.OnTurnRight;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="FollowDirectionActions.UnregisterCallbacks(IFollowDirectionActions)" />.
+        /// </summary>
+        /// <seealso cref="FollowDirectionActions.UnregisterCallbacks(IFollowDirectionActions)" />
+        public void RemoveCallbacks(IFollowDirectionActions instance)
+        {
+            if (m_Wrapper.m_FollowDirectionActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="FollowDirectionActions.AddCallbacks(IFollowDirectionActions)" />
+        /// <seealso cref="FollowDirectionActions.RemoveCallbacks(IFollowDirectionActions)" />
+        /// <seealso cref="FollowDirectionActions.UnregisterCallbacks(IFollowDirectionActions)" />
+        public void SetCallbacks(IFollowDirectionActions instance)
+        {
+            foreach (var item in m_Wrapper.m_FollowDirectionActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_FollowDirectionActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="FollowDirectionActions" /> instance referencing this action map.
+    /// </summary>
+    public FollowDirectionActions @FollowDirection => new FollowDirectionActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -2120,5 +2280,27 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSwitchLanes(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "FollowDirection" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="FollowDirectionActions.AddCallbacks(IFollowDirectionActions)" />
+    /// <seealso cref="FollowDirectionActions.RemoveCallbacks(IFollowDirectionActions)" />
+    public interface IFollowDirectionActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "TurnLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTurnLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TurnRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTurnRight(InputAction.CallbackContext context);
     }
 }
