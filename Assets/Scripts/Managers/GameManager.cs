@@ -127,11 +127,8 @@ public class GameManager : MonoBehaviour
     {
         if (!canRandomizeMinigame)
         {
-            Debug.Log("cant randomize minigame");
             return;
         }
-
-        Debug.Log("next minigame has been randomized");
 
         ResetTimer();
         RandomizeMinigame();

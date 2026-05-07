@@ -6,8 +6,8 @@ public class FollowDirectionMinigame : MinigameBase
     private InputSystem_Actions inputActions;
 
     [Header("References")]
-    private GameObject[] directions;
-    private GameObject minigameUI;
+    [SerializeField] private GameObject[] directions;
+    [SerializeField] private GameObject minigameUI;
 
     private bool isRight = false;
 
@@ -53,8 +53,6 @@ public class FollowDirectionMinigame : MinigameBase
                 isRight = false;
                 break;
         }
-
-        Debug.Log($"current direction is right: {isRight}");
     }
 
     private void TurnRight(InputAction.CallbackContext context)
