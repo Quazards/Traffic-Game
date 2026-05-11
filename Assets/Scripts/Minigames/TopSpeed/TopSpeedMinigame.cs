@@ -20,11 +20,6 @@ public class TopSpeedMinigame : MinigameBase
     private float currentSpeed;
     private float speedModifier;
 
-    private void Start()
-    {
-
-        //SetupMinigame();
-    }
 
     private void OnEnable()
     {
@@ -52,8 +47,6 @@ public class TopSpeedMinigame : MinigameBase
     private void ChangeSpeedOverTime()
     {
         currentSpeed += (-1 + (speedModifier * speedIncrease)) * Time.deltaTime;
-
-        //Debug.Log($"current speed: {currentSpeed}, speed modifier: {speedModifier}");
     }
 
     private void ChangeSpeedMod(InputAction.CallbackContext context)
@@ -72,21 +65,17 @@ public class TopSpeedMinigame : MinigameBase
         {
             MinigameWin();
             PostMinigameUI.Instance.OpenWinScreen();
-            //Debug.Log("you win");
         }
         else
         {
             MinigameLose();
             PostMinigameUI.Instance.OpenLoseScreen();
-            //Debug.Log("you lose");
         }
     }
 
     private void ResetMinigame()
     {
         currentSpeed = Random.Range(45, 55);
-
-        //RandomizeThreshold();
     }
 
     private void RandomizeThreshold()
@@ -107,6 +96,7 @@ public class TopSpeedMinigame : MinigameBase
         inputActions.TopSpeed.Enable();
 
         currentSpeed = startingSpeed;
+        ShowIndicator();
     }
 
     public override void SetupUI()
@@ -118,5 +108,10 @@ public class TopSpeedMinigame : MinigameBase
     {
         this.enabled = false;
         minigameUI.SetActive(false);
+    }
+
+    public override void ShowIndicator()
+    {
+        base.ShowIndicator();
     }
 }

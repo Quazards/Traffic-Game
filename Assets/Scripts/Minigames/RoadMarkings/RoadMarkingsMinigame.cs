@@ -26,11 +26,6 @@ public class RoadMarkingsMinigame : MinigameBase
     private bool hasLostMinigame = false;
     private Vector2 targetPos;
 
-    private void Start()
-    {
-        //SetupMinigame();
-    }
-
     private void OnEnable()
     {
         OnCollision += LoseMinigame;
@@ -125,10 +120,16 @@ public class RoadMarkingsMinigame : MinigameBase
         car.position = leftSideAnchor.position;
         isLeft = true;
         scrollingBackground.ResetYAxis();
+        ShowIndicator();
     }
 
     public override void SetupUI()
     {
         minigameUI.SetActive(true);
+    }
+
+    public override void ShowIndicator()
+    {
+        base.ShowIndicator();
     }
 }

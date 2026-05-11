@@ -1,4 +1,7 @@
 using System;
+using System.Collections;
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 public abstract class MinigameBase : MonoBehaviour
@@ -9,6 +12,8 @@ public abstract class MinigameBase : MonoBehaviour
     public static EventHandler OnMinigameLose;
 
     public bool hasBeenPlayed = false;
+
+    public RectTransform indicatorText;
 
     public abstract void SetupMinigame();
     public abstract void SetupUI();
@@ -24,5 +29,30 @@ public abstract class MinigameBase : MonoBehaviour
     {
         OnMinigameLose?.Invoke(this, EventArgs.Empty);
         OnMinigameStop?.Invoke(this, EventArgs.Empty);
+    }
+
+    public virtual void ShowIndicator()
+    {
+        StartCoroutine(DisplayRoutine());
+    }
+
+    private void DisplayIndicator()
+    {
+        indicatorText.transform.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(Ease.InOutSine);
+    }
+
+    private void HideIndicator()
+    {
+        indicatorText.transform.DOScale(new Vector3(0.1f, 0.1f, 0.1f), 0.5f).SetEase(Ease.InOutSine);
+    }    
+
+    private IEnumerator DisplayRoutine()
+    {
+        indicatorText.gameObject.SetActive(true);
+        DisplayIndicator();
+        yield return new WaitForSeconds(2);
+        HideIndicator();
+        yield return new WaitForSeconds(0.5f);
+        indicatorText.gameObject.SetActive(false);
     }
 }

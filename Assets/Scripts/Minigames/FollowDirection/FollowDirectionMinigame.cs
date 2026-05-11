@@ -104,6 +104,7 @@ public class FollowDirectionMinigame : MinigameBase
         inputActions.FollowDirection.Enable();
 
         RandomizeDirection();
+        ShowIndicator();
 
 
     }
@@ -111,5 +112,10 @@ public class FollowDirectionMinigame : MinigameBase
     public override void SetupUI()
     {
         minigameUI.SetActive(true);
+    }
+
+    public override void ShowIndicator()
+    {
+        base.ShowIndicator();
     }
 }

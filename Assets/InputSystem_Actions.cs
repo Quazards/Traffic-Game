@@ -1181,6 +1181,34 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""PersonCrossing"",
+            ""id"": ""120faa53-7d89-4805-ab76-be6b303fdc30"",
+            ""actions"": [
+                {
+                    ""name"": ""DecreaseSpeed"",
+                    ""type"": ""Button"",
+                    ""id"": ""c7d56d7a-dc99-4e27-bf8b-bc74ab712688"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""79bebef1-2264-42d3-ad83-86dbcd62aa15"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DecreaseSpeed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1279,6 +1307,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_FollowDirection = asset.FindActionMap("FollowDirection", throwIfNotFound: true);
         m_FollowDirection_TurnLeft = m_FollowDirection.FindAction("TurnLeft", throwIfNotFound: true);
         m_FollowDirection_TurnRight = m_FollowDirection.FindAction("TurnRight", throwIfNotFound: true);
+        // PersonCrossing
+        m_PersonCrossing = asset.FindActionMap("PersonCrossing", throwIfNotFound: true);
+        m_PersonCrossing_DecreaseSpeed = m_PersonCrossing.FindAction("DecreaseSpeed", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1288,6 +1319,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_TopSpeed.enabled, "This will cause a leak and performance issues, InputSystem_Actions.TopSpeed.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_RoadMarkings.enabled, "This will cause a leak and performance issues, InputSystem_Actions.RoadMarkings.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_FollowDirection.enabled, "This will cause a leak and performance issues, InputSystem_Actions.FollowDirection.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_PersonCrossing.enabled, "This will cause a leak and performance issues, InputSystem_Actions.PersonCrossing.Disable() has not been called.");
     }
 
     /// <summary>
@@ -2037,6 +2069,102 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="FollowDirectionActions" /> instance referencing this action map.
     /// </summary>
     public FollowDirectionActions @FollowDirection => new FollowDirectionActions(this);
+
+    // PersonCrossing
+    private readonly InputActionMap m_PersonCrossing;
+    private List<IPersonCrossingActions> m_PersonCrossingActionsCallbackInterfaces = new List<IPersonCrossingActions>();
+    private readonly InputAction m_PersonCrossing_DecreaseSpeed;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "PersonCrossing".
+    /// </summary>
+    public struct PersonCrossingActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public PersonCrossingActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "PersonCrossing/DecreaseSpeed".
+        /// </summary>
+        public InputAction @DecreaseSpeed => m_Wrapper.m_PersonCrossing_DecreaseSpeed;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_PersonCrossing; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="PersonCrossingActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(PersonCrossingActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="PersonCrossingActions" />
+        public void AddCallbacks(IPersonCrossingActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PersonCrossingActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PersonCrossingActionsCallbackInterfaces.Add(instance);
+            @DecreaseSpeed.started += instance.OnDecreaseSpeed;
+            @DecreaseSpeed.performed += instance.OnDecreaseSpeed;
+            @DecreaseSpeed.canceled += instance.OnDecreaseSpeed;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="PersonCrossingActions" />
+        private void UnregisterCallbacks(IPersonCrossingActions instance)
+        {
+            @DecreaseSpeed.started -= instance.OnDecreaseSpeed;
+            @DecreaseSpeed.performed -= instance.OnDecreaseSpeed;
+            @DecreaseSpeed.canceled -= instance.OnDecreaseSpeed;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PersonCrossingActions.UnregisterCallbacks(IPersonCrossingActions)" />.
+        /// </summary>
+        /// <seealso cref="PersonCrossingActions.UnregisterCallbacks(IPersonCrossingActions)" />
+        public void RemoveCallbacks(IPersonCrossingActions instance)
+        {
+            if (m_Wrapper.m_PersonCrossingActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="PersonCrossingActions.AddCallbacks(IPersonCrossingActions)" />
+        /// <seealso cref="PersonCrossingActions.RemoveCallbacks(IPersonCrossingActions)" />
+        /// <seealso cref="PersonCrossingActions.UnregisterCallbacks(IPersonCrossingActions)" />
+        public void SetCallbacks(IPersonCrossingActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PersonCrossingActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PersonCrossingActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="PersonCrossingActions" /> instance referencing this action map.
+    /// </summary>
+    public PersonCrossingActions @PersonCrossing => new PersonCrossingActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -2302,5 +2430,20 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTurnRight(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PersonCrossing" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="PersonCrossingActions.AddCallbacks(IPersonCrossingActions)" />
+    /// <seealso cref="PersonCrossingActions.RemoveCallbacks(IPersonCrossingActions)" />
+    public interface IPersonCrossingActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "DecreaseSpeed" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDecreaseSpeed(InputAction.CallbackContext context);
     }
 }

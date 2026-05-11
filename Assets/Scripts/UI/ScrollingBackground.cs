@@ -48,4 +48,10 @@ public class ScrollingBackground : MonoBehaviour
         background.transform.localPosition = new Vector3(0, 0, 0);
         currentYPos = 0;
     }
+
+    public void ResetXAxis()
+    {
+        background.transform.localPosition = new Vector3(0, 0, 0);
+        currentXPos = 0;
+    }
 }

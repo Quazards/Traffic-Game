@@ -14,12 +14,13 @@ public class GameManager : MonoBehaviour
 
     private List<MinigameBase> shuffledMinigames = new();
 
-    private float baseTimer = 5;
     private bool canCountDownTimer = false;
     private bool canRandomizeMinigame = true;
+    private bool hasStartedGame = false;
     private float score;
     private float currentTime;
     private float playedMinigamesCount = 0;
+    private float baseTimer = 5;
 
     private void Awake()
     {
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (!hasStartedGame) return;
         UpdateTimer();
     }
 
@@ -147,6 +149,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        hasStartedGame = true;
         canRandomizeMinigame = true;
         OnGameStart?.Invoke();
     }

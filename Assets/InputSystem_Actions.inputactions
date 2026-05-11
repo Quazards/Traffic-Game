@@ -1095,6 +1095,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "PersonCrossing",
+            "id": "120faa53-7d89-4805-ab76-be6b303fdc30",
+            "actions": [
+                {
+                    "name": "DecreaseSpeed",
+                    "type": "Button",
+                    "id": "c7d56d7a-dc99-4e27-bf8b-bc74ab712688",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "79bebef1-2264-42d3-ad83-86dbcd62aa15",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DecreaseSpeed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

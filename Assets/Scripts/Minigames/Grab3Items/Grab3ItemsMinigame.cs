@@ -80,6 +80,7 @@ public class Grab3ItemsMinigame : MinigameBase
         GameManager.OnTimerFinish += LoseMinigame;
 
         ResetMinigame();
+        ShowIndicator();
 
         hasWonMinigame = false;
     }
@@ -93,5 +94,10 @@ public class Grab3ItemsMinigame : MinigameBase
     {
         minigameUI.SetActive(false);
         this.enabled = false;
+    }
+
+    public override void ShowIndicator()
+    {
+        base.ShowIndicator();
     }
 }
