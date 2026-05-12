@@ -12,6 +12,8 @@ public class ChooseGateMinigame : MinigameBase
     [SerializeField] private TextMeshProUGUI rightSign;
 
     private bool isRight = false;
+    private bool hasWonMinigame = false;
+    private bool hasLostMinigame = false;
 
     private void OnEnable()
     {
@@ -25,6 +27,7 @@ public class ChooseGateMinigame : MinigameBase
         inputActions.ChooseGate.Disable();
 
         PostMinigameUI.OnPostGameHalfWay -= CloseMinigame;
+        GameManager.OnTimerFinish -= LoseMinigame;
     }
 
     private void RandomizeGate()
@@ -48,13 +51,18 @@ public class ChooseGateMinigame : MinigameBase
 
     private void TurnRight(InputAction.CallbackContext context)
     {
+        if (hasLostMinigame) return;
+        if(hasWonMinigame) return;
+
         if (isRight)
         {
+            hasWonMinigame = true;
             MinigameWin();
-            PostMinigameUI.Instance.OpenWinScreen();
+            PostMinigameUI.Instance.OpenWinScreen();          
         }
         else
         {
+            hasLostMinigame = true;
             MinigameLose();
             PostMinigameUI.Instance.OpenLoseScreen();
         }
@@ -62,16 +70,30 @@ public class ChooseGateMinigame : MinigameBase
 
     private void TurnLeft(InputAction.CallbackContext context)
     {
+        if (hasLostMinigame) return;
+        if (hasWonMinigame) return;
+
         if (!isRight)
         {
+            hasWonMinigame = true;
             MinigameWin();
             PostMinigameUI.Instance.OpenWinScreen();
         }
         else
         {
+            hasLostMinigame = true;
             MinigameLose();
             PostMinigameUI.Instance.OpenLoseScreen();
         }
+    }
+
+    private void LoseMinigame()
+    {
+        if (hasWonMinigame) return;
+        if (hasLostMinigame) return;
+        hasLostMinigame = true;
+        MinigameLose();
+        PostMinigameUI.Instance.OpenLoseScreen();
     }
 
     public override void CloseMinigame()
@@ -87,10 +109,13 @@ public class ChooseGateMinigame : MinigameBase
 
         inputActions.ChooseGate.TurnRight.performed += TurnRight;
         inputActions.ChooseGate.TurnLeft.performed += TurnLeft;
+        GameManager.OnTimerFinish += LoseMinigame;
         inputActions.ChooseGate.Enable();
 
         RandomizeGate();
         ShowIndicator();
+        hasWonMinigame = false;
+        hasLostMinigame = false;
     }
 
     public override void SetupUI()

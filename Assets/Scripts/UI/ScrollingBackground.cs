@@ -9,7 +9,8 @@ public class ScrollingBackground : MonoBehaviour
     [SerializeField] private float maxXPos;
     [SerializeField] private float maxYPos;
     [SerializeField] private float speed = 0.01f;
-    
+
+    private float speedModifier = 0;
     private float currentXPos;
     private float currentYPos;
 
@@ -21,7 +22,7 @@ public class ScrollingBackground : MonoBehaviour
 
     public void ScrollXAxis()
     {
-        currentXPos -= speed;
+        currentXPos -= (speed + speedModifier);
         background.transform.localPosition = new Vector3(currentXPos, 0, 0);
 
         if(currentXPos < -maxXPos)
@@ -33,7 +34,7 @@ public class ScrollingBackground : MonoBehaviour
 
     public void ScrollYAxis()
     {
-        currentYPos -= speed;
+        currentYPos -= (speed + speedModifier);
         background.transform.localPosition = new Vector3(0, currentYPos, 0);
 
         if (currentYPos < -maxYPos)
@@ -53,5 +54,15 @@ public class ScrollingBackground : MonoBehaviour
     {
         background.transform.localPosition = new Vector3(0, 0, 0);
         currentXPos = 0;
+    }
+
+    public void IncreaseScrollSpeed(float amount)
+    {
+        speedModifier += amount;
+    }
+
+    public void ResetScrollSpeed()
+    {
+        speedModifier = 0;
     }
 }

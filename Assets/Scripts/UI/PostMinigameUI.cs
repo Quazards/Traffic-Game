@@ -4,6 +4,7 @@ using DG.Tweening;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Device;
 
 public class PostMinigameUI : MonoBehaviour
 {
@@ -19,8 +20,9 @@ public class PostMinigameUI : MonoBehaviour
     [SerializeField] private GameObject loseScreen;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private GameObject gameEndScreen;
+    [SerializeField] private RectTransform[] fasterScreens;
 
-    [Header("Settings")]
+    [Header("Settings - result screen")]
     [SerializeField] private float initialXPos;
     [SerializeField] private float endXPos;
     [SerializeField] private float moveDuration;
@@ -51,6 +53,7 @@ public class PostMinigameUI : MonoBehaviour
         GameManager.OnGameStart += CloseGameEndScreen;
         HealthSystem.OnZeroHealth += StopPostMinigameCountdown;
         HealthSystem.OnZeroHealth += OpenGameEndScreen;
+        GameManager.OnTimeModifierIncrease += ShowFasterScreen;
     }
 
     private void OnDisable()
@@ -60,6 +63,8 @@ public class PostMinigameUI : MonoBehaviour
         GameManager.OnGameStart -= CloseGameEndScreen;
         HealthSystem.OnZeroHealth -= StopPostMinigameCountdown;
         HealthSystem.OnZeroHealth -= OpenGameEndScreen;
+        GameManager.OnTimeModifierIncrease -= ShowFasterScreen;
+
     }
 
     private void Update()
@@ -72,20 +77,27 @@ public class PostMinigameUI : MonoBehaviour
         if (currentTimer <= 0)
         {
             OnPostGameTimerEnd?.Invoke();
-            CloseScreen();
+            //CloseScreen(resultScreen);
+            MoveOut(resultScreen);
         }
     }
 
-    private void MoveIn()
+    private void MoveIn(RectTransform screen)
     {
-        resultScreen.transform.localPosition = new Vector3(endXPos, resultScreen.transform.localPosition.y, resultScreen.transform.localPosition.z);
-        resultScreen.DOAnchorPos(new Vector2(initialXPos, resultScreen.transform.localPosition.y), moveDuration, false).SetEase(Ease.InOutSine);
+        screen.transform.localPosition = new Vector3(endXPos, screen.transform.localPosition.y, screen.transform.localPosition.z);
+        screen.DOAnchorPos(new Vector2(initialXPos, screen.transform.localPosition.y), moveDuration, false).SetEase(Ease.InOutSine);
     }
 
-    private void MoveOut(TweenCallback onEnd)
+    private void MoveIn(RectTransform screen, float initialPos)
     {
-        resultScreen.transform.localPosition = new Vector3(initialXPos, resultScreen.transform.localPosition.y, resultScreen.transform.localPosition.z);
-        resultScreen.DOAnchorPos(new Vector2(endXPos, resultScreen.transform.localPosition.y), moveDuration, false).SetEase(Ease.InOutSine);
+        screen.transform.localPosition = new Vector3(endXPos, screen.transform.localPosition.y, screen.transform.localPosition.z);
+        screen.DOAnchorPos(new Vector2(initialPos, screen.transform.localPosition.y), moveDuration, false).SetEase(Ease.InOutSine);
+    }
+
+    private void MoveOut(RectTransform screen)
+    {
+        screen.transform.localPosition = new Vector3(initialXPos, screen.transform.localPosition.y, screen.transform.localPosition.z);
+        screen.DOAnchorPos(new Vector2(endXPos, screen.transform.localPosition.y), moveDuration, false).SetEase(Ease.InOutSine);
 
         if (postMiniTween != null)
         {
@@ -95,14 +107,20 @@ public class PostMinigameUI : MonoBehaviour
         //postMiniTween.onComplete += onEnd;
     }
 
-    private void CloseScreen()
+    private void MoveOut(RectTransform screen, float initialPos)
     {
-        MoveOut( () =>
-        {
-            scoreText.gameObject.SetActive(false);
-            winScreen.SetActive(false);
-            loseScreen.SetActive(false);
-        });
+        screen.transform.localPosition = new Vector3(initialPos, screen.transform.localPosition.y, screen.transform.localPosition.z);
+        screen.DOAnchorPos(new Vector2(endXPos, screen.transform.localPosition.y), moveDuration, false).SetEase(Ease.InOutSine);
+    }
+
+    private void CloseScreen(RectTransform screen)
+    {
+        //MoveOut( screen, () =>
+        //{
+        //    scoreText.gameObject.SetActive(false);
+        //    winScreen.SetActive(false);
+        //    loseScreen.SetActive(false);
+        //});
     }
 
     private IEnumerator HalfwayTimer()
@@ -115,6 +133,23 @@ public class PostMinigameUI : MonoBehaviour
     {
         yield return new WaitForSeconds (breakTimer * 0.75f);
         OnPostGameThreeFourths?.Invoke();
+    }
+
+    private IEnumerator DisplayFasterScreen(RectTransform fasterScreen)
+    {
+        float startingPos = fasterScreen.transform.localPosition.x;
+        fasterScreen.gameObject.SetActive(true);
+        MoveIn(fasterScreen, fasterScreen.transform.localPosition.x);
+        yield return new WaitForSeconds(1.5f);
+        MoveOut(fasterScreen, fasterScreen.transform.localPosition.x);
+        yield return new WaitForSeconds(1.5f);
+        fasterScreen.gameObject.SetActive(false);
+        fasterScreen.transform.localPosition = new Vector3(startingPos, fasterScreen.transform.localPosition.y, fasterScreen.transform.localPosition.z);
+    }
+    private IEnumerator DisplayFasterScreenWithDelay(RectTransform fasterScreeen, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        StartCoroutine(DisplayFasterScreen(fasterScreeen));
     }
 
     private void OpenGameEndScreen()
@@ -137,6 +172,29 @@ public class PostMinigameUI : MonoBehaviour
         StartCoroutine(ThreeFourthsTimer());
     }
 
+    private void ShowFasterScreen()
+    {
+        if (HealthSystem.Instance.onZeroHealth) return;
+
+        //if (GameManager.Instance.PlayedMinigamesCount > 24) return;
+
+        //if (GameManager.Instance.PlayedMinigamesCount % 6 == 0)
+        //{
+        //    for (int i = 0; i < fasterScreens.Length; i++)
+        //    {
+        //        StartCoroutine(DisplayFasterScreenWithDelay(fasterScreens[i], (0.25f * i)));
+
+        //    }
+        //}
+
+        for (int i = 0; i < fasterScreens.Length; i++)
+        {
+            StartCoroutine(DisplayFasterScreenWithDelay(fasterScreens[i], (0.25f * i)));
+
+        }
+    }
+
+
     public void OpenWinScreen()
     {
         hasOpenedPostScreen = true;
@@ -147,7 +205,7 @@ public class PostMinigameUI : MonoBehaviour
 
         scoreText.gameObject.SetActive(true);
         winScreen.SetActive(true);
-        MoveIn();
+        MoveIn(resultScreen);
     }
 
     public void OpenLoseScreen()
@@ -160,7 +218,7 @@ public class PostMinigameUI : MonoBehaviour
 
         scoreText.gameObject.SetActive(true);
         loseScreen.SetActive(true);
-        MoveIn();
+        MoveIn(resultScreen);
     }
 
     public void UpdateScoreText(float amount)

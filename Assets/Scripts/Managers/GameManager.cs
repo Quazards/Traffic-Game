@@ -8,19 +8,28 @@ public class GameManager : MonoBehaviour
 
     public static Action OnTimerFinish;
     public static Action OnGameStart;
+    public static Action OnTimeModifierIncrease;
+
+    [Header("References")]
+    [SerializeField] private GameObject[] Fuels;
 
     [Header("Minigames")]
     public MinigameBase[] minigameBases;
 
     private List<MinigameBase> shuffledMinigames = new();
 
+    public float PlayedMinigamesCount { get; private set; } = 0;
+
     private bool canCountDownTimer = false;
     private bool canRandomizeMinigame = true;
     private bool hasStartedGame = false;
+    private bool hasIncreasedTimerModOnetime = false;
     private float score;
     private float currentTime;
-    private float playedMinigamesCount = 0;
     private float baseTimer = 5;
+    private float timerModifier = 0;
+    private float fuelTimer = 2;
+    private float fuelCount = 0;
 
     private void Awake()
     {
@@ -42,6 +51,7 @@ public class GameManager : MonoBehaviour
         MinigameBase.OnMinigameWin += IncrementScore;
         PostMinigameUI.OnPostGameTimerEnd += SetNextMinigame;
         MinigameBase.OnMinigameStop += EnableMinigameRandomization;
+        PostMinigameUI.OnPostGameHalfWay += IncrementTimerModifier;
     }
 
     private void OnDisable()
@@ -51,6 +61,7 @@ public class GameManager : MonoBehaviour
         MinigameBase.OnMinigameWin -= IncrementScore;
         PostMinigameUI.OnPostGameTimerEnd -= SetNextMinigame;
         MinigameBase.OnMinigameStop -= EnableMinigameRandomization;
+        PostMinigameUI.OnPostGameHalfWay -= IncrementTimerModifier;
     }
 
     private void Start()
@@ -62,6 +73,7 @@ public class GameManager : MonoBehaviour
     {
         if (!hasStartedGame) return;
         UpdateTimer();
+        UpdateFuelCountdown();
     }
 
     private void UpdateTimer()
@@ -69,7 +81,7 @@ public class GameManager : MonoBehaviour
         if (!canCountDownTimer) return;
 
         currentTime -= Time.deltaTime;
-        TimerUI.Instance.UpdateTimer(currentTime, baseTimer);
+        TimerUI.Instance.UpdateTimer(currentTime, baseTimer - timerModifier);
 
         if(currentTime <= 0)
         {
@@ -78,9 +90,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void UpdateFuelCountdown()
+    {
+        if(!canCountDownTimer) return;
+
+        fuelTimer -= Time.deltaTime;
+
+        if(fuelTimer <= 0 && fuelCount < 3)
+        {
+            int random = UnityEngine.Random.Range(0, Fuels.Length);
+
+            for(int i = 0; i < Fuels.Length; i++)
+            {
+                Fuels[random].GetComponent<Fuel>().EnableFuel();
+            }
+            fuelTimer = 2;
+        }
+    }
+
     private void ResetTimer()
     {
-        currentTime = baseTimer;
+        currentTime = baseTimer - timerModifier;
         canCountDownTimer = true;
     }
 
@@ -90,9 +120,23 @@ public class GameManager : MonoBehaviour
         PostMinigameUI.Instance.UpdateScoreText(score);
     }
 
-    private void EvaluateMinigame(object sender, System.EventArgs e)
+    private void IncrementTimerModifier()
     {
-        
+        if (PlayedMinigamesCount > 24) return;
+
+        if (PlayedMinigamesCount % 6 == 0 && PlayedMinigamesCount != 0)
+        {
+            if(!hasIncreasedTimerModOnetime)
+            {
+                timerModifier += 1f;
+            }
+            else
+            {
+                timerModifier += 0.5f;
+            }
+            timerModifier = Mathf.Min(2.5f, timerModifier);
+            OnTimeModifierIncrease?.Invoke();
+        }
     }
 
     private void ShuffleMinigames()
@@ -123,6 +167,7 @@ public class GameManager : MonoBehaviour
         selectedMinigame.SetupMinigame();
         selectedMinigame.SetupUI();
         canRandomizeMinigame = false;
+        PlayedMinigamesCount += 1;
     }
 
     private void SetNextMinigame()
@@ -149,13 +194,47 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        for (int i = 0; i < Fuels.Length; i++)
+        {
+            Fuels[i].GetComponent<Fuel>().DisableFuel();
+        }
+
+        fuelCount = 0;
+        fuelTimer = 2;
+        PlayedMinigamesCount = 0;
+        timerModifier = 0;
         hasStartedGame = true;
         canRandomizeMinigame = true;
+        hasIncreasedTimerModOnetime = false;
         OnGameStart?.Invoke();
     }
 
     public void EnableMinigameRandomization(object sender, System.EventArgs e)
     {
         canRandomizeMinigame = true;
+    }
+
+    public void GainTime(float amount)
+    {
+        currentTime += amount;
+        TimerUI.Instance.UpdateTimer(currentTime, baseTimer - timerModifier);
+    }
+
+    public void GainScore(float amount)
+    {
+        score += amount;
+        PostMinigameUI.Instance.UpdateScoreText(score);
+    }
+
+    public void DecrementFuelCount()
+    {
+        fuelCount--;
+        fuelCount = Mathf.Max(0, fuelCount);
+    }
+
+    public void IncrementFuelCount()
+    {
+        fuelCount++;
+        fuelCount = MathF.Min(3, fuelCount);
     }
 }

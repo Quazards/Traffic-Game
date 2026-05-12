@@ -10,6 +10,8 @@ public class FollowDirectionMinigame : MinigameBase
     [SerializeField] private GameObject minigameUI;
 
     private bool isRight = false;
+    private bool hasWonMinigame = false;
+    private bool hasLostMinigame = false;
 
     private void OnEnable()
     {
@@ -23,6 +25,7 @@ public class FollowDirectionMinigame : MinigameBase
         inputActions.FollowDirection.Disable();
 
         PostMinigameUI.OnPostGameHalfWay -= CloseMinigame;
+        GameManager.OnTimerFinish -= LoseMinigame;
     }
 
     private void RandomizeDirection()
@@ -57,13 +60,18 @@ public class FollowDirectionMinigame : MinigameBase
 
     private void TurnRight(InputAction.CallbackContext context)
     {
-        if(isRight)
+        if (hasLostMinigame) return;
+        if (hasWonMinigame) return;
+
+        if (isRight)
         {
+            hasWonMinigame = true;
             MinigameWin();
             PostMinigameUI.Instance.OpenWinScreen();
         }
         else
         {
+            hasLostMinigame = true;
             MinigameLose();
             PostMinigameUI.Instance.OpenLoseScreen();
         }
@@ -71,16 +79,30 @@ public class FollowDirectionMinigame : MinigameBase
 
     private void TurnLeft(InputAction.CallbackContext context)
     {
+        if (hasLostMinigame) return;
+        if (hasWonMinigame) return;
+
         if (!isRight)
         {
+            hasWonMinigame = true;
             MinigameWin();
             PostMinigameUI.Instance.OpenWinScreen();
         }
         else
         {
+            hasLostMinigame = true;
             MinigameLose();
             PostMinigameUI.Instance.OpenLoseScreen();
         }
+    }
+
+    private void LoseMinigame()
+    {
+        if (hasWonMinigame) return;
+        if (hasLostMinigame) return;
+        MinigameLose();
+        hasLostMinigame = true;
+        PostMinigameUI.Instance.OpenLoseScreen();
     }
 
     public override void CloseMinigame()
@@ -102,10 +124,13 @@ public class FollowDirectionMinigame : MinigameBase
         inputActions.FollowDirection.TurnRight.performed += TurnRight;
         inputActions.FollowDirection.TurnLeft.performed += TurnLeft;
         inputActions.FollowDirection.Enable();
+        GameManager.OnTimerFinish += LoseMinigame;
 
         RandomizeDirection();
         ShowIndicator();
 
+        hasWonMinigame = false;
+        hasLostMinigame = false;
 
     }
 

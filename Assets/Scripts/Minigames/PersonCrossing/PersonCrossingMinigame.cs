@@ -15,6 +15,7 @@ public class PersonCrossingMinigame : MinigameBase
     private float maxProgress = 100;
 
     private bool hasWon = false;
+    private bool hasLost = false;
 
     private void OnEnable()
     {
@@ -42,6 +43,7 @@ public class PersonCrossingMinigame : MinigameBase
     private void IncreaseProgress(InputAction.CallbackContext context)
     {
         if (hasWon) return;
+        if (hasLost) return;
         currentProgress += 2.5f;
         UpdateSlider();
 
@@ -62,6 +64,7 @@ public class PersonCrossingMinigame : MinigameBase
     private void LoseMinigame()
     {
         if (hasWon) return;
+        hasLost = true;
         MinigameLose();
         PostMinigameUI.Instance.OpenLoseScreen();
     }
@@ -71,6 +74,7 @@ public class PersonCrossingMinigame : MinigameBase
         currentProgress = 0;
         scrollingBackground.ResetXAxis();
         hasWon = false;
+        hasLost = false;
         UpdateSlider();
     }
 

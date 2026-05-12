@@ -10,6 +10,8 @@ public class TopSpeedMinigame : MinigameBase
     [SerializeField] private GameObject minigameUI;
     [SerializeField] private ScrollingBackground scrollingBackground;
     [SerializeField] private TextMeshProUGUI speedText;
+    [SerializeField] private TextMeshProUGUI[] topSpeedSigns;
+    [SerializeField] private TextMeshProUGUI[] minSpeedSigns;
 
     [Header("Settings")]
     [SerializeField] private float startingSpeed = 50;
@@ -80,8 +82,18 @@ public class TopSpeedMinigame : MinigameBase
 
     private void RandomizeThreshold()
     {
-        minSpeedThreshold = Random.Range(50, 60);
-        maxSpeedThreshold = Random.Range(70, 100);
+        minSpeedThreshold = Random.Range(55, 60);
+        maxSpeedThreshold = Random.Range(65, 70);
+
+        for(int i = 0; i < topSpeedSigns.Length; i++)
+        {
+            topSpeedSigns[i].text = maxSpeedThreshold.ToString();
+        }
+
+        for(int i = 0; i < minSpeedSigns.Length; i++)
+        {
+            minSpeedSigns[i].text = minSpeedThreshold.ToString();
+        }
     }
 
     public override void SetupMinigame()
@@ -97,6 +109,7 @@ public class TopSpeedMinigame : MinigameBase
 
         currentSpeed = startingSpeed;
         ShowIndicator();
+        RandomizeThreshold();
     }
 
     public override void SetupUI()

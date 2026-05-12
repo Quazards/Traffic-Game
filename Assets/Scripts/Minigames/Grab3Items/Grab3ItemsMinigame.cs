@@ -56,8 +56,6 @@ public class Grab3ItemsMinigame : MinigameBase
         if (hasWonMinigame) return;
         MinigameLose();
         PostMinigameUI.Instance.OpenLoseScreen();
-
-        //Debug.Log("lose minigame");
     }
 
     private void ResetMinigame()
