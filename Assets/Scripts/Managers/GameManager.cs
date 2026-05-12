@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
         MinigameBase.OnMinigameWin -= IncrementScore;
         PostMinigameUI.OnPostGameTimerEnd -= SetNextMinigame;
         MinigameBase.OnMinigameStop -= EnableMinigameRandomization;
-        PostMinigameUI.OnPostGameHalfWay -= IncrementTimerModifier;
+        PostMinigameUI.OnPostGameHalfWay-= IncrementTimerModifier;
     }
 
     private void Start()
@@ -122,6 +122,7 @@ public class GameManager : MonoBehaviour
 
     private void IncrementTimerModifier()
     {
+        if (HealthSystem.Instance.onZeroHealth) return;
         if (PlayedMinigamesCount > 24) return;
 
         if (PlayedMinigamesCount % 6 == 0 && PlayedMinigamesCount != 0)

@@ -176,17 +176,6 @@ public class PostMinigameUI : MonoBehaviour
     {
         if (HealthSystem.Instance.onZeroHealth) return;
 
-        //if (GameManager.Instance.PlayedMinigamesCount > 24) return;
-
-        //if (GameManager.Instance.PlayedMinigamesCount % 6 == 0)
-        //{
-        //    for (int i = 0; i < fasterScreens.Length; i++)
-        //    {
-        //        StartCoroutine(DisplayFasterScreenWithDelay(fasterScreens[i], (0.25f * i)));
-
-        //    }
-        //}
-
         for (int i = 0; i < fasterScreens.Length; i++)
         {
             StartCoroutine(DisplayFasterScreenWithDelay(fasterScreens[i], (0.25f * i)));

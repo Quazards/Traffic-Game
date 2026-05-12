@@ -5,7 +5,7 @@ public class MainMenuUI : MonoBehaviour
     [Header("Reference")]
     [SerializeField] ScrollingBackground scrollingBackground;
 
-    private void Update()
+    private void FixedUpdate()
     {
         scrollingBackground.ScrollXAxis();
     }

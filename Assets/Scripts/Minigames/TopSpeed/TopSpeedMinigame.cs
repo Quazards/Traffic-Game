@@ -41,9 +41,13 @@ public class TopSpeedMinigame : MinigameBase
 
     private void Update()
     {
+        UpdateSpeedText();
+    }
+
+    private void FixedUpdate()
+    {
         ChangeSpeedOverTime();
         scrollingBackground.ScrollXAxis();
-        UpdateSpeedText();
     }
 
     private void ChangeSpeedOverTime()
@@ -82,8 +86,8 @@ public class TopSpeedMinigame : MinigameBase
 
     private void RandomizeThreshold()
     {
-        minSpeedThreshold = Random.Range(55, 60);
-        maxSpeedThreshold = Random.Range(65, 70);
+        minSpeedThreshold = Random.Range(50, 55);
+        maxSpeedThreshold = Random.Range(60, 65);
 
         for(int i = 0; i < topSpeedSigns.Length; i++)
         {

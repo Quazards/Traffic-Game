@@ -35,7 +35,7 @@ public class PersonCrossingMinigame : MinigameBase
 
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         scrollingBackground.ScrollXAxis();
     }

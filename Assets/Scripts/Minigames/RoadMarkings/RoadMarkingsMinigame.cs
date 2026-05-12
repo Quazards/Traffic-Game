@@ -45,7 +45,6 @@ public class RoadMarkingsMinigame : MinigameBase
 
     private void Update()
     {
-        scrollingBackground.ScrollYAxis();
 
         if (isChangingLanes)
         {
@@ -65,6 +64,8 @@ public class RoadMarkingsMinigame : MinigameBase
 
     private void FixedUpdate()
     {
+        scrollingBackground.ScrollYAxis();
+
         OnMoving?.Invoke();
     }
 

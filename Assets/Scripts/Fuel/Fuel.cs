@@ -11,6 +11,7 @@ public class Fuel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timeGainedText;
 
     private bool isEnabled = false;
+    private bool hasBeenClicked = false;
     private float ScoreGained = 50;
     private float TimeGained = 0.5f;
 
@@ -20,17 +21,19 @@ public class Fuel : MonoBehaviour
         EnableObject(fuel);
         GameManager.Instance.IncrementFuelCount();
         isEnabled = true;
+        hasBeenClicked = false;
     }
 
     public void DisableFuel()
     {
         DisableObject(fuel);
         isEnabled = false;
+        hasBeenClicked = false;
     }
 
     public void GainFuel()
     {
-
+        if(hasBeenClicked) return;
         float random = Random.Range(0, 2);
 
         switch(random)
@@ -50,6 +53,7 @@ public class Fuel : MonoBehaviour
         GameManager.Instance.DecrementFuelCount();
         StartCoroutine(DisableRoutine(fuel));
         isEnabled = false;
+        hasBeenClicked = true;
     }
 
     private IEnumerator DisableRoutine(GameObject obj)

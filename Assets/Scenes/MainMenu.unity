@@ -3877,7 +3877,7 @@ MonoBehaviour:
   background: {fileID: 394604731}
   maxXPos: 1950
   maxYPos: 0
-  speed: 10
+  speed: 6
 --- !u!1 &1578931889
 GameObject:
   m_ObjectHideFlags: 0
