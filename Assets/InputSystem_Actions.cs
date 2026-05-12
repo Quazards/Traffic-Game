@@ -1209,6 +1209,54 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""ChooseGate"",
+            ""id"": ""1cad6ac5-3da2-453e-9969-8be8cbdeece5"",
+            ""actions"": [
+                {
+                    ""name"": ""TurnLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""898e369d-493e-4dec-b0f9-4f8b55d23994"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TurnRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed739e00-56d6-46a0-aa41-5db16fcbcec2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ad6d4b65-ef68-420a-8499-7e0708b4cc2b"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TurnLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ef366095-73b0-4bac-b7e3-16724fb7d451"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TurnRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1310,6 +1358,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         // PersonCrossing
         m_PersonCrossing = asset.FindActionMap("PersonCrossing", throwIfNotFound: true);
         m_PersonCrossing_DecreaseSpeed = m_PersonCrossing.FindAction("DecreaseSpeed", throwIfNotFound: true);
+        // ChooseGate
+        m_ChooseGate = asset.FindActionMap("ChooseGate", throwIfNotFound: true);
+        m_ChooseGate_TurnLeft = m_ChooseGate.FindAction("TurnLeft", throwIfNotFound: true);
+        m_ChooseGate_TurnRight = m_ChooseGate.FindAction("TurnRight", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1320,6 +1372,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_RoadMarkings.enabled, "This will cause a leak and performance issues, InputSystem_Actions.RoadMarkings.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_FollowDirection.enabled, "This will cause a leak and performance issues, InputSystem_Actions.FollowDirection.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_PersonCrossing.enabled, "This will cause a leak and performance issues, InputSystem_Actions.PersonCrossing.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_ChooseGate.enabled, "This will cause a leak and performance issues, InputSystem_Actions.ChooseGate.Disable() has not been called.");
     }
 
     /// <summary>
@@ -2165,6 +2218,113 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="PersonCrossingActions" /> instance referencing this action map.
     /// </summary>
     public PersonCrossingActions @PersonCrossing => new PersonCrossingActions(this);
+
+    // ChooseGate
+    private readonly InputActionMap m_ChooseGate;
+    private List<IChooseGateActions> m_ChooseGateActionsCallbackInterfaces = new List<IChooseGateActions>();
+    private readonly InputAction m_ChooseGate_TurnLeft;
+    private readonly InputAction m_ChooseGate_TurnRight;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "ChooseGate".
+    /// </summary>
+    public struct ChooseGateActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public ChooseGateActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "ChooseGate/TurnLeft".
+        /// </summary>
+        public InputAction @TurnLeft => m_Wrapper.m_ChooseGate_TurnLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "ChooseGate/TurnRight".
+        /// </summary>
+        public InputAction @TurnRight => m_Wrapper.m_ChooseGate_TurnRight;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_ChooseGate; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="ChooseGateActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(ChooseGateActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="ChooseGateActions" />
+        public void AddCallbacks(IChooseGateActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ChooseGateActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ChooseGateActionsCallbackInterfaces.Add(instance);
+            @TurnLeft.started += instance.OnTurnLeft;
+            @TurnLeft.performed += instance.OnTurnLeft;
+            @TurnLeft.canceled += instance.OnTurnLeft;
+            @TurnRight.started += instance.OnTurnRight;
+            @TurnRight.performed += instance.OnTurnRight;
+            @TurnRight.canceled += instance.OnTurnRight;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="ChooseGateActions" />
+        private void UnregisterCallbacks(IChooseGateActions instance)
+        {
+            @TurnLeft.started -= instance.OnTurnLeft;
+            @TurnLeft.performed -= instance.OnTurnLeft;
+            @TurnLeft.canceled -= instance.OnTurnLeft;
+            @TurnRight.started -= instance.OnTurnRight;
+            @TurnRight.performed -= instance.OnTurnRight;
+            @TurnRight.canceled -= instance.OnTurnRight;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ChooseGateActions.UnregisterCallbacks(IChooseGateActions)" />.
+        /// </summary>
+        /// <seealso cref="ChooseGateActions.UnregisterCallbacks(IChooseGateActions)" />
+        public void RemoveCallbacks(IChooseGateActions instance)
+        {
+            if (m_Wrapper.m_ChooseGateActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="ChooseGateActions.AddCallbacks(IChooseGateActions)" />
+        /// <seealso cref="ChooseGateActions.RemoveCallbacks(IChooseGateActions)" />
+        /// <seealso cref="ChooseGateActions.UnregisterCallbacks(IChooseGateActions)" />
+        public void SetCallbacks(IChooseGateActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ChooseGateActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ChooseGateActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="ChooseGateActions" /> instance referencing this action map.
+    /// </summary>
+    public ChooseGateActions @ChooseGate => new ChooseGateActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -2445,5 +2605,27 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDecreaseSpeed(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ChooseGate" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="ChooseGateActions.AddCallbacks(IChooseGateActions)" />
+    /// <seealso cref="ChooseGateActions.RemoveCallbacks(IChooseGateActions)" />
+    public interface IChooseGateActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "TurnLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTurnLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TurnRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTurnRight(InputAction.CallbackContext context);
     }
 }

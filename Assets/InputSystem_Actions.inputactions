@@ -1123,6 +1123,54 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "ChooseGate",
+            "id": "1cad6ac5-3da2-453e-9969-8be8cbdeece5",
+            "actions": [
+                {
+                    "name": "TurnLeft",
+                    "type": "Button",
+                    "id": "898e369d-493e-4dec-b0f9-4f8b55d23994",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TurnRight",
+                    "type": "Button",
+                    "id": "ed739e00-56d6-46a0-aa41-5db16fcbcec2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ad6d4b65-ef68-420a-8499-7e0708b4cc2b",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TurnLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ef366095-73b0-4bac-b7e3-16724fb7d451",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TurnRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
