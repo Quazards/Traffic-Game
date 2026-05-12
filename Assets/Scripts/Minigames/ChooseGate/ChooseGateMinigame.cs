@@ -33,18 +33,19 @@ public class ChooseGateMinigame : MinigameBase
     private void RandomizeGate()
     {
         int random = Random.Range(0, 2);
-
+        float randomMin = Random.Range(1.0f, 1.5f);
+        float randomMax = Random.Range(1.6f, 2.0f);
         switch(random)
         {
             case 0:
                 isRight = true;
-                rightSign.text = "2.5 M";
-                leftSign.text = "1.5 M";
+                rightSign.text = randomMax.ToString("F1") + " M";
+                leftSign.text = randomMin.ToString("F1") + " M";
                 break;
             case 1:
                 isRight = false;
-                rightSign.text = "1.5 M";
-                leftSign.text = "2.5 M";
+                rightSign.text = randomMin.ToString("F1") + " M";
+                leftSign.text = randomMax.ToString("F1") + " M";
                 break;
         }
     }
